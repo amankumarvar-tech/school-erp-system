@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Post Notice{% endblock %}
+{% block page_title %}Post Notice{% endblock %}
+{% block content %}
+<div class="page-header"><div><h1>Post New Notice</h1></div><a href="{% url 'notice_list' %}" class="btn btn-outline">Back</a></div>
+<div style="max-width:700px;">
+<div class="card">
+<form method="post">{% csrf_token %}
+    <div class="form-group"><label class="form-label">Title *</label><input name="title" class="form-control" required placeholder="Notice title"></div>
+    <div class="form-grid">
+        <div class="form-group"><label class="form-label">Audience</label>
+            <select name="audience" class="form-control">
+                <option value="all">Everyone</option><option value="students">Students Only</option>
+                <option value="teachers">Teachers Only</option><option value="parents">Parents Only</option>
+            </select>
+        </div>
+        <div class="form-group"><label class="form-label">Priority</label>
+            <select name="priority" class="form-control">
+                <option value="low">Low</option><option value="medium" selected>Medium</option>
+                <option value="high">High</option><option value="urgent">Urgent</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group"><label class="form-label">Expiry Date (optional)</label><input type="date" name="expiry_date" class="form-control"></div>
+    <div class="form-group"><label class="form-label">Content *</label><textarea name="content" class="form-control" rows="6" required placeholder="Write notice content here..."></textarea></div>
+    <button type="submit" class="btn btn-primary"><i class="fas fa-bullhorn"></i> Post Notice</button>
+</form>
+</div>
+</div>
+{% endblock %}

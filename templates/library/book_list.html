@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Books{% endblock %}
+{% block page_title %}Library Books{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div><h1>Library Books</h1><p>All books in the library</p></div>
+    <div style="display:flex;gap:10px;">
+        <form method="get" class="search-box"><i class="fas fa-search"></i><input type="text" name="q" value="{{ query }}" placeholder="Title, author, ISBN..."></form>
+        <a href="{% url 'book_add' %}" class="btn btn-primary"><i class="fas fa-plus"></i> Add Book</a>
+    </div>
+</div>
+<div class="card mb-4">
+    <form method="get" style="display:flex;gap:10px;align-items:center;">
+        <input type="hidden" name="q" value="{{ query }}">
+        {% for cat in categories %}
+        <a href="?category={{ cat.id }}" class="btn btn-sm {% if category_id == cat.id|stringformat:'s' %}btn-primary{% else %}btn-outline{% endif %}">{{ cat.name }}</a>
+        {% endfor %}
+        <a href="{% url 'book_list' %}" class="btn btn-sm btn-outline">All</a>
+    </form>
+</div>
+<div class="card">
+    <div class="table-wrapper">
+        <table>
+            <thead><tr><th>Title</th><th>Author</th><th>Category</th><th>ISBN</th><th>Total</th><th>Available</th><th>Shelf</th><th>Actions</th></tr></thead>
+            <tbody>
+            {% for book in books %}
+            <tr>
+                <td><div style="font-weight:600;">{{ book.title }}</div><div class="text-muted">{{ book.publisher }}</div></td>
+                <td>{{ book.author }}</td>
+                <td>{{ book.category }}</td>
+                <td class="text-muted">{{ book.isbn|default:"—" }}</td>
+                <td>{{ book.total_copies }}</td>
+                <td>
+                    <span class="badge {% if book.available_copies > 0 %}badge-success{% else %}badge-danger{% endif %}">
+                        {{ book.available_copies }}
+                    </span>
+                </td>
+                <td>{{ book.shelf_location|default:"—" }}</td>
+                <td>
+                    {% if book.available_copies > 0 %}
+                    <a href="{% url 'issue_book' %}?book={{ book.id }}" class="btn btn-sm btn-success"><i class="fas fa-share"></i></a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="8" style="text-align:center;padding:50px;color:#8892a4;">No books found. <a href="{% url 'book_add' %}" style="color:#3b4fd8;">Add first book</a></td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

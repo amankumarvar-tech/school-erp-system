@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Add Room{% endblock %}
+{% block page_title %}Add Room{% endblock %}
+{% block content %}
+<div class="page-header"><div><h1>Add Hostel Room</h1></div><a href="{% url 'hostel_dashboard' %}" class="btn btn-outline">Back</a></div>
+<div style="max-width:500px;"><div class="card">
+<form method="post">{% csrf_token %}
+    <div class="form-group"><label class="form-label">Hostel *</label><select name="hostel" class="form-control" required>{% for h in hostels %}<option value="{{ h.id }}">{{ h.name }}</option>{% endfor %}</select></div>
+    <div class="form-group"><label class="form-label">Room Number *</label><input name="room_number" class="form-control" required placeholder="e.g. 101"></div>
+    <div class="form-group"><label class="form-label">Floor</label><input type="number" name="floor" class="form-control" value="1"></div>
+    <div class="form-group"><label class="form-label">Capacity</label><input type="number" name="capacity" class="form-control" value="4"></div>
+    <div class="form-group"><label class="form-label">Room Type</label><select name="room_type" class="form-control"><option value="single">Single</option><option value="double">Double</option><option value="triple">Triple</option><option value="dormitory">Dormitory</option></select></div>
+    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Add Room</button>
+</form>
+</div></div>
+{% endblock %}

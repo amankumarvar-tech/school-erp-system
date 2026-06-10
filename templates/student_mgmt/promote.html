@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block title %}Promote Students{% endblock %}
+{% block page_title %}Student Promotion{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div><h1>🎓 Student Promotion</h1><p>Promote students to next class/section</p></div>
+    <a href="{% url 'student_list' %}" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Back</a>
+</div>
+
+<!-- Step 1: Select Source Class -->
+<div class="card mb-4">
+    <div class="card-header"><div class="card-title">Step 1: Select Class to Promote From</div></div>
+    <form method="get">
+        <div class="form-grid">
+            <div class="form-group">
+                <label class="form-label">Select Class</label>
+                <select name="class" class="form-control" onchange="this.form.submit()">
+                    <option value="">-- Select Class --</option>
+                    {% for cls in classes %}
+                    <option value="{{ cls.id }}" {% if selected_class.id == cls.id %}selected{% endif %}>
+                        Class {{ cls.name }}-{{ cls.section }} ({{ cls.student_count }} students) — {{ cls.academic_year }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% if selected_class %}
+<!-- Step 2: Promote -->
+<div class="card">
+    <div class="card-header">
+        <div class="card-title">Step 2: Promote from Class {{ selected_class.name }}-{{ selected_class.section }}</div>
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="from_class" value="{{ selected_class.id }}">
+        <div class="form-group" style="max-width:400px;">
+            <label class="form-label">Promote To (Target Class)</label>
+            <select name="to_class" class="form-control" required>
+                <option value="">-- Select Target Class --</option>
+                {% for cls in next_classes %}
+                {% if cls.id != selected_class.id %}
+                <option value="{{ cls.id }}">Class {{ cls.name }}-{{ cls.section }} — {{ cls.academic_year }}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="selectAll" style="width:16px;height:16px;"> Select All</th>
+                        <th>Admission No.</th>
+                        <th>Student Name</th>
+                        <th>Roll No.</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students_in_class %}
+                    <tr>
+                        <td><input type="checkbox" name="students" value="{{ student.id }}" class="student-check" style="width:16px;height:16px;"></td>
+                        <td>{{ student.admission_number }}</td>
+                        <td style="font-weight:600;">{{ student.full_name }}</td>
+                        <td>{{ student.roll_number|default:"-" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" style="text-align:center;padding:30px;color:#8892a4;">No students in this class</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if students_in_class %}
+        <div style="margin-top:18px;">
+            <button type="submit" class="btn btn-primary" onclick="return confirm('Promote selected students?')">
+                <i class="fas fa-arrow-up"></i> Promote Selected Students
+            </button>
+        </div>
+        {% endif %}
+    </form>
+</div>
+
+<script>
+document.getElementById('selectAll').addEventListener('change', function(){
+    document.querySelectorAll('.student-check').forEach(cb => cb.checked = this.checked);
+});
+</script>
+{% endif %}
+{% endblock %}

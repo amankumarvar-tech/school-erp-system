@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Notices{% endblock %}
+{% block page_title %}Notice Board{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div><h1>Notice Board</h1><p>All school announcements and notices</p></div>
+    <a href="{% url 'notice_add' %}" class="btn btn-primary"><i class="fas fa-plus"></i> Post Notice</a>
+</div>
+<div style="display:flex;flex-direction:column;gap:15px;">
+    {% for notice in notices %}
+    <div class="card" style="border-left:4px solid {% if notice.priority == 'urgent' %}#e74c3c{% elif notice.priority == 'high' %}#f39c12{% else %}#3b4fd8{% endif %};">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+            <div>
+                <div style="font-size:17px;font-weight:700;">{{ notice.title }}</div>
+                <div class="text-muted">{{ notice.published_at|date:"d M Y, H:i" }} | {{ notice.get_audience_display }}</div>
+            </div>
+            <span class="badge {% if notice.priority == 'urgent' %}badge-danger{% elif notice.priority == 'high' %}badge-warning{% else %}badge-info{% endif %}">
+                {{ notice.get_priority_display }}
+            </span>
+        </div>
+        <p style="color:#374151;line-height:1.6;">{{ notice.content }}</p>
+    </div>
+        <div style="margin-top:10px;">
+            <form method="post" action="{% url 'notice_delete' notice.pk %}" style="display:inline;" onsubmit="return confirm('Remove this notice?')">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i> Remove</button>
+            </form>
+        </div>
+    {% empty %}
+    <div class="card" style="text-align:center;padding:60px;color:#8892a4;">
+        <div style="font-size:50px;margin-bottom:15px;">📢</div>
+        <div>No notices yet. <a href="{% url 'notice_add' %}" style="color:#3b4fd8;">Post first notice</a></div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

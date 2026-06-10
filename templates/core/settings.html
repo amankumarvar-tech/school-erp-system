@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}Settings{% endblock %}
+{% block page_title %}Settings{% endblock %}
+{% block content %}
+<div class="page-header"><div><h1>⚙️ System Settings</h1><p>Configure school profile and system preferences</p></div></div>
+
+<div class="grid-2">
+<!-- School Profile -->
+<div class="card">
+    <div class="card-header"><div class="card-title">🏫 School Profile</div></div>
+    <form method="post">{% csrf_token %}
+    <input type="hidden" name="action" value="profile">
+    {% if profile %}
+    <div class="form-group"><label class="form-label">School Name</label><input name="name" value="{{ profile.name }}" class="form-control"></div>
+    <div class="form-group"><label class="form-label">Principal Name</label><input name="principal_name" value="{{ profile.principal_name }}" class="form-control"></div>
+    <div class="form-group"><label class="form-label">Phone</label><input name="phone" value="{{ profile.phone }}" class="form-control"></div>
+    <div class="form-group"><label class="form-label">Email</label><input name="email" value="{{ profile.email }}" class="form-control"></div>
+    <div class="form-group"><label class="form-label">Board</label>
+        <select name="board" class="form-control">
+            <option value="CBSE" {% if profile.board == 'CBSE' %}selected{% endif %}>CBSE</option>
+            <option value="ICSE" {% if profile.board == 'ICSE' %}selected{% endif %}>ICSE</option>
+            <option value="STATE" {% if profile.board == 'STATE' %}selected{% endif %}>State Board</option>
+        </select>
+    </div>
+    <div class="form-group"><label class="form-label">Address</label><textarea name="address" class="form-control" rows="2">{{ profile.address }}</textarea></div>
+    {% else %}
+    <div class="alert alert-warning"><i class="fas fa-info-circle"></i> No school profile found. Create one via Admin panel.</div>
+    {% endif %}
+    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Profile</button>
+    </form>
+</div>
+
+<!-- Academic Years -->
+<div class="card">
+    <div class="card-header"><div class="card-title">📅 Academic Years</div></div>
+    <div class="table-wrapper" style="margin-bottom:20px;">
+        <table>
+            <thead><tr><th>Year</th><th>Start</th><th>End</th><th>Current</th></tr></thead>
+            <tbody>
+            {% for yr in years %}
+            <tr>
+                <td style="font-weight:600;">{{ yr.year }}</td>
+                <td>{{ yr.start_date }}</td>
+                <td>{{ yr.end_date }}</td>
+                <td>{% if yr.is_current %}<span class="badge badge-success">✓ Current</span>{% else %}—{% endif %}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4" style="text-align:center;padding:20px;color:#8892a4;">No academic years</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <hr class="divider">
+    <div style="font-weight:600;margin-bottom:12px;">Add New Academic Year</div>
+    <form method="post">{% csrf_token %}
+    <input type="hidden" name="action" value="add_year">
+    <div class="form-group"><label class="form-label">Year Label</label><input name="year" class="form-control" placeholder="e.g. 2025-26" required></div>
+    <div class="form-group"><label class="form-label">Start Date</label><input type="date" name="start_date" class="form-control" required></div>
+    <div class="form-group"><label class="form-label">End Date</label><input type="date" name="end_date" class="form-control" required></div>
+    <div class="form-group" style="display:flex;align-items:center;gap:8px;"><input type="checkbox" name="is_current" id="is_current"><label for="is_current" style="font-size:13px;font-weight:600;">Set as Current Year</label></div>
+    <button type="submit" class="btn btn-success"><i class="fas fa-plus"></i> Add Year</button>
+    </form>
+</div>
+
+<!-- Quick Stats -->
+<div class="card">
+    <div class="card-header"><div class="card-title">📊 System Summary</div></div>
+    {% with profile=profile %}
+    <table><tbody>
+        <tr><td style="color:#8892a4;padding:10px 0;width:50%">School Name</td><td><strong>{{ profile.name|default:"Not set" }}</strong></td></tr>
+        <tr><td style="color:#8892a4;padding:10px 0;">Board</td><td>{{ profile.board|default:"—" }}</td></tr>
+        <tr><td style="color:#8892a4;padding:10px 0;">Principal</td><td>{{ profile.principal_name|default:"—" }}</td></tr>
+        <tr><td style="color:#8892a4;padding:10px 0;">Est. Year</td><td>{{ profile.established_year|default:"—" }}</td></tr>
+        <tr><td style="color:#8892a4;padding:10px 0;">Affiliation</td><td>{{ profile.affiliation|default:"—" }}</td></tr>
+    </tbody></table>
+    {% endwith %}
+</div>
+
+<!-- Quick Links -->
+<div class="card">
+    <div class="card-header"><div class="card-title">🔗 Quick Links</div></div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+        <a href="/admin/" class="btn btn-dark"><i class="fas fa-tools"></i> Django Admin Panel</a>
+        <a href="/admin/student_mgmt/student/" class="btn btn-outline"><i class="fas fa-user-graduate"></i> Manage Students (Admin)</a>
+        <a href="/admin/teacher_mgmt/teacher/" class="btn btn-outline"><i class="fas fa-chalkboard-teacher"></i> Manage Teachers (Admin)</a>
+        <a href="/admin/core/academicyear/" class="btn btn-outline"><i class="fas fa-calendar"></i> Manage Academic Years</a>
+        <a href="/admin/auth/user/" class="btn btn-outline"><i class="fas fa-users"></i> Manage Users</a>
+    </div>
+</div>
+</div>
+{% endblock %}

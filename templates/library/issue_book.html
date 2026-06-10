@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Issue Book{% endblock %}
+{% block page_title %}Issue Book{% endblock %}
+{% block content %}
+<div class="page-header"><div><h1>Issue Book</h1></div><a href="{% url 'library_dashboard' %}" class="btn btn-outline">Back</a></div>
+<div style="max-width:600px;">
+<div class="card">
+<form method="post">{% csrf_token %}
+    <div class="form-group"><label class="form-label">Book *</label>
+        <select name="book" class="form-control" required>
+            <option value="">Select Book</option>
+            {% for book in books %}<option value="{{ book.id }}">{{ book.title }} ({{ book.available_copies }} available)</option>{% endfor %}
+        </select>
+    </div>
+    <div class="form-group"><label class="form-label">Borrower Type *</label>
+        <select name="borrower_type" class="form-control" onchange="toggleBorrower(this.value)" required>
+            <option value="student">Student</option>
+            <option value="teacher">Teacher</option>
+        </select>
+    </div>
+    <div class="form-group" id="student_div">
+        <label class="form-label">Student</label>
+        <select name="student" class="form-control">
+            <option value="">Select Student</option>
+            {% for s in students %}<option value="{{ s.id }}">{{ s.full_name }} ({{ s.admission_number }})</option>{% endfor %}
+        </select>
+    </div>
+    <div class="form-group" id="teacher_div" style="display:none;">
+        <label class="form-label">Teacher</label>
+        <select name="teacher" class="form-control">
+            <option value="">Select Teacher</option>
+            {% for t in teachers %}<option value="{{ t.id }}">{{ t.full_name }} ({{ t.employee_id }})</option>{% endfor %}
+        </select>
+    </div>
+    <div class="form-group"><label class="form-label">Due Date *</label><input type="date" name="due_date" class="form-control" required></div>
+    <button type="submit" class="btn btn-success"><i class="fas fa-hand-holding-heart"></i> Issue Book</button>
+</form>
+</div>
+</div>
+<script>
+function toggleBorrower(type) {
+    document.getElementById('student_div').style.display = type === 'student' ? 'block' : 'none';
+    document.getElementById('teacher_div').style.display = type === 'teacher' ? 'block' : 'none';
+}
+</script>
+{% endblock %}

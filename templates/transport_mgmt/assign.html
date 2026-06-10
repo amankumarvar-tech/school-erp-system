@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Assign Transport{% endblock %}
+{% block page_title %}Assign Transport{% endblock %}
+{% block content %}
+<div class="page-header"><div><h1>Assign Student to Route</h1></div><a href="{% url 'transport_dashboard' %}" class="btn btn-outline">Back</a></div>
+<div style="max-width:500px;">
+<div class="card">
+<form method="post">{% csrf_token %}
+    <div class="form-group"><label class="form-label">Student *</label>
+        <select name="student" class="form-control" required>
+            <option value="">Select Student</option>
+            {% for s in students %}<option value="{{ s.id }}">{{ s.full_name }} ({{ s.admission_number }})</option>{% endfor %}
+        </select>
+    </div>
+    <div class="form-group"><label class="form-label">Bus Route *</label>
+        <select name="route" class="form-control" required>
+            <option value="">Select Route</option>
+            {% for r in routes %}<option value="{{ r.id }}">{{ r.route_number }} - {{ r.route_name }}</option>{% endfor %}
+        </select>
+    </div>
+    <div class="form-group"><label class="form-label">Pickup Stop *</label><input name="pickup_stop" class="form-control" required></div>
+    <div class="form-group"><label class="form-label">Drop Stop</label><input name="drop_stop" class="form-control"></div>
+    <div class="form-group"><label class="form-label">Start Date *</label><input type="date" name="start_date" class="form-control" required></div>
+    <button type="submit" class="btn btn-success"><i class="fas fa-check"></i> Assign Transport</button>
+</form>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Enter Results{% endblock %}
+{% block page_title %}Enter Results{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>Enter Results: {{ exam.subject.name }}</h1>
+        <p>{{ exam.exam_type.name }} | {{ exam.class_name }} | {{ exam.exam_date }} | Max: {{ exam.max_marks }}</p>
+    </div>
+    <a href="{% url 'exam_list' %}" class="btn btn-outline">Back</a>
+</div>
+<form method="post">{% csrf_token %}
+<div class="card">
+    <div class="table-wrapper">
+        <table>
+            <thead><tr><th>#</th><th>Student</th><th>Marks (out of {{ exam.max_marks }})</th><th>Absent</th></tr></thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td style="font-weight:600;">{{ student.full_name }}</td>
+                    <td>
+                        <input type="number" name="marks_{{ student.id }}" 
+                               value="{{ existing|default_if_none:'' }}"
+                               min="0" max="{{ exam.max_marks }}" 
+                               class="form-control" style="width:100px;"
+                               placeholder="Marks">
+                    </td>
+                    <td><input type="checkbox" name="absent_{{ student.id }}"></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div style="margin-top:20px;text-align:right;">
+        <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Save All Results</button>
+    </div>
+</div>
+</form>
+{% endblock %}

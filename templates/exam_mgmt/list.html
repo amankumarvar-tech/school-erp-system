@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Exams{% endblock %}
+{% block page_title %}Examinations{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div><h1>Examination Management</h1><p>Schedule and manage all exams</p></div>
+    <a href="{% url 'exam_add' %}" class="btn btn-primary"><i class="fas fa-plus"></i> Schedule Exam</a>
+</div>
+<div class="card">
+    <div class="table-wrapper">
+        <table>
+            <thead><tr><th>Exam Type</th><th>Subject</th><th>Class</th><th>Date</th><th>Time</th><th>Marks</th><th>Venue</th><th>Actions</th></tr></thead>
+            <tbody>
+                {% for exam in exams %}
+                <tr>
+                    <td><span class="badge badge-info">{{ exam.exam_type.name }}</span></td>
+                    <td style="font-weight:600;">{{ exam.subject.name }}</td>
+                    <td>{{ exam.class_name }}</td>
+                    <td>{{ exam.exam_date }}</td>
+                    <td class="text-muted">{{ exam.start_time }} - {{ exam.end_time }}</td>
+                    <td>{{ exam.max_marks }} / Pass: {{ exam.pass_marks }}</td>
+                    <td>{{ exam.venue|default:"TBA" }}</td>
+                    <td><a href="{% url 'result_entry' exam.pk %}" class="btn btn-sm btn-success"><i class="fas fa-pencil-alt"></i> Enter Results</a></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="8" style="text-align:center;padding:50px;color:#8892a4;">No exams scheduled. <a href="{% url 'exam_add' %}" style="color:#3b4fd8;">Schedule one</a></td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

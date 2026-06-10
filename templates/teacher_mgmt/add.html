@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Add Teacher{% endblock %}
+{% block page_title %}Add Teacher{% endblock %}
+{% block content %}
+<div class="page-header"><div><h1>Add New Teacher</h1></div><a href="{% url 'teacher_list' %}" class="btn btn-outline">Back</a></div>
+<form method="post">{% csrf_token %}
+<div class="card mb-4">
+    <div class="card-header"><div class="card-title">👨‍🏫 Teacher Information</div></div>
+    <div class="form-grid">
+        <div class="form-group"><label class="form-label">Employee ID *</label><input name="employee_id" class="form-control" placeholder="e.g. TCH001" required></div>
+        <div class="form-group"><label class="form-label">First Name *</label><input name="first_name" class="form-control" required></div>
+        <div class="form-group"><label class="form-label">Last Name *</label><input name="last_name" class="form-control" required></div>
+        <div class="form-group"><label class="form-label">Date of Birth *</label><input type="date" name="date_of_birth" class="form-control" required></div>
+        <div class="form-group"><label class="form-label">Gender *</label><select name="gender" class="form-control"><option value="M">Male</option><option value="F">Female</option><option value="O">Other</option></select></div>
+        <div class="form-group"><label class="form-label">Email *</label><input type="email" name="email" class="form-control" required></div>
+        <div class="form-group"><label class="form-label">Phone *</label><input name="phone" class="form-control" required></div>
+        <div class="form-group"><label class="form-label">Designation *</label><input name="designation" class="form-control" placeholder="e.g. Senior Teacher" required></div>
+        <div class="form-group"><label class="form-label">Qualification *</label><input name="qualification" class="form-control" placeholder="e.g. M.Sc., B.Ed." required></div>
+        <div class="form-group"><label class="form-label">Department</label><select name="department" class="form-control"><option value="">Select Department</option>{% for dept in departments %}<option value="{{ dept.id }}">{{ dept.name }}</option>{% endfor %}</select></div>
+        <div class="form-group"><label class="form-label">Joining Date *</label><input type="date" name="joining_date" class="form-control" required></div>
+        <div class="form-group"><label class="form-label">Experience (Years)</label><input type="number" name="experience_years" class="form-control" value="0"></div>
+        <div class="form-group"><label class="form-label">Basic Salary (₹)</label><input type="number" name="basic_salary" class="form-control" value="0"></div>
+        <div class="form-group"><label class="form-label">Employment Type</label><select name="employment_type" class="form-control"><option value="permanent">Permanent</option><option value="contract">Contract</option><option value="part_time">Part Time</option><option value="guest">Guest Faculty</option></select></div>
+    </div>
+    <div class="form-group"><label class="form-label">Address</label><textarea name="address" class="form-control" rows="2"></textarea></div>
+</div>
+<div style="text-align:right;"><button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Add Teacher</button></div>
+</form>
+{% endblock %}

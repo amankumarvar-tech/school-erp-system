@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% block title %}Analytics{% endblock %}
+{% block page_title %}Analytics & Reports{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div><h1>📊 Analytics Dashboard</h1><p>Visual insights for school management</p></div>
+</div>
+
+<div class="grid-2 mb-4">
+    <div class="card">
+        <div class="card-header"><div class="card-title">🎓 Students per Class</div></div>
+        <canvas id="classChart" height="200"></canvas>
+    </div>
+    <div class="card">
+        <div class="card-header"><div class="card-title">📅 Attendance Trend (7 Days)</div></div>
+        <canvas id="attendanceChart" height="200"></canvas>
+    </div>
+    <div class="card">
+        <div class="card-header"><div class="card-title">💰 Fee Status Distribution</div></div>
+        <canvas id="feeChart" height="200"></canvas>
+    </div>
+    <div class="card">
+        <div class="card-header"><div class="card-title">💵 Monthly Fee Collection</div></div>
+        <canvas id="feeMonthlyChart" height="200"></canvas>
+    </div>
+    <div class="card">
+        <div class="card-header"><div class="card-title">👫 Gender Distribution</div></div>
+        <canvas id="genderChart" height="200"></canvas>
+    </div>
+    <div class="card">
+        <div class="card-header"><div class="card-title">📝 Exam Grade Distribution</div></div>
+        <canvas id="gradeChart" height="200"></canvas>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header"><div class="card-title">📋 Quick Reports</div></div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <a href="{% url 'student_report_pdf' %}" target="_blank" class="btn btn-primary"><i class="fas fa-file-pdf"></i> Student Report PDF</a>
+        <a href="{% url 'attendance_report_pdf' %}" target="_blank" class="btn btn-success"><i class="fas fa-file-pdf"></i> Attendance Report PDF</a>
+        <a href="{% url 'fee_report_pdf' %}" target="_blank" class="btn btn-warning"><i class="fas fa-file-pdf"></i> Fee Report PDF</a>
+        <a href="{% url 'reports_home' %}" class="btn btn-outline"><i class="fas fa-chart-bar"></i> All Reports</a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const COLORS = {
+    blue: '#3b4fd8', green: '#2ecc71', red: '#e74c3c', orange: '#f39c12',
+    purple: '#9b59b6', teal: '#1abc9c', navy: '#1a1f36', yellow: '#f5a623'
+};
+const PALETTE = Object.values(COLORS);
+
+async function fetchData(type) {
+    const r = await fetch(`/analytics/data/?type=${type}`);
+    return r.json();
+}
+
+async function initCharts() {
+    // Class distribution bar
+    const cls = await fetchData('overview');
+    new Chart(document.getElementById('classChart'), {
+        type: 'bar',
+        data: { labels: cls.labels, datasets: [{ label: 'Students', data: cls.values, backgroundColor: COLORS.blue, borderRadius: 6 }] },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+    });
+
+    // Attendance trend line
+    const att = await fetchData('attendance_trend');
+    new Chart(document.getElementById('attendanceChart'), {
+        type: 'line',
+        data: { labels: att.labels, datasets: [
+            { label: 'Present', data: att.present, borderColor: COLORS.green, backgroundColor: 'rgba(46,204,113,0.1)', tension: 0.4, fill: true },
+            { label: 'Absent', data: att.absent, borderColor: COLORS.red, backgroundColor: 'rgba(231,76,60,0.1)', tension: 0.4, fill: true }
+        ]},
+        options: { responsive: true, scales: { y: { beginAtZero: true } } }
+    });
+
+    // Fee status donut
+    const fee = await fetchData('fee_status');
+    new Chart(document.getElementById('feeChart'), {
+        type: 'doughnut',
+        data: { labels: fee.labels, datasets: [{ data: fee.values, backgroundColor: [COLORS.green, COLORS.orange, COLORS.red, COLORS.blue] }] },
+        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+    });
+
+    // Monthly fee bar
+    const feeM = await fetchData('fee_monthly');
+    new Chart(document.getElementById('feeMonthlyChart'), {
+        type: 'bar',
+        data: { labels: feeM.labels, datasets: [{ label: '₹ Collected', data: feeM.values, backgroundColor: COLORS.green, borderRadius: 6 }] },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+    });
+
+    // Gender pie
+    const gen = await fetchData('gender');
+    new Chart(document.getElementById('genderChart'), {
+        type: 'pie',
+        data: { labels: gen.labels, datasets: [{ data: gen.values, backgroundColor: [COLORS.blue, COLORS.orange, COLORS.purple] }] },
+        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+    });
+
+    // Grade distribution bar
+    const grade = await fetchData('exam_performance');
+    new Chart(document.getElementById('gradeChart'), {
+        type: 'bar',
+        data: { labels: grade.labels, datasets: [{ label: 'Students', data: grade.values,
+            backgroundColor: grade.labels.map(g => g === 'F' ? COLORS.red : g.includes('+') ? COLORS.green : COLORS.blue),
+            borderRadius: 6 }] },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+    });
+}
+
+initCharts();
+</script>
+{% endblock %}

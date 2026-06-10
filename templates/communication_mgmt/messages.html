@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Messages{% endblock %}
+{% block page_title %}Internal Messages{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div><h1>✉️ Messages</h1><p>Internal communication system</p></div>
+    <a href="{% url 'message_send' %}" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Compose</a>
+</div>
+
+<div class="grid-2">
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">📥 Inbox</div>
+            <span class="badge badge-info">{{ received.count }} messages</span>
+        </div>
+        {% for msg in received %}
+        <div style="padding:14px 0;border-bottom:1px solid #e2e8f0;{% if not msg.is_read %}background:#f0f4ff;border-radius:8px;padding:14px;margin-bottom:4px;{% endif %}">
+            <div style="display:flex;justify-content:space-between;">
+                <div style="font-weight:{% if not msg.is_read %}700{% else %}500{% endif %};">{{ msg.subject }}</div>
+                <div class="text-muted">{{ msg.sent_at|date:"d M, H:i" }}</div>
+            </div>
+            <div class="text-muted">From: {{ msg.sender.get_full_name|default:msg.sender.username }}</div>
+            <div style="margin-top:6px;font-size:13px;color:#374151;">{{ msg.content|truncatewords:20 }}</div>
+        </div>
+        {% empty %}
+        <div style="text-align:center;padding:40px;color:#8892a4;"><i class="fas fa-inbox" style="font-size:32px;margin-bottom:10px;display:block;"></i>Inbox is empty</div>
+        {% endfor %}
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">📤 Sent</div>
+            <span class="badge badge-secondary">{{ sent.count }} messages</span>
+        </div>
+        {% for msg in sent %}
+        <div style="padding:14px 0;border-bottom:1px solid #e2e8f0;">
+            <div style="display:flex;justify-content:space-between;">
+                <div style="font-weight:500;">{{ msg.subject }}</div>
+                <div class="text-muted">{{ msg.sent_at|date:"d M, H:i" }}</div>
+            </div>
+            <div class="text-muted">To: {{ msg.receiver.get_full_name|default:msg.receiver.username }}</div>
+            <div style="margin-top:4px;font-size:13px;color:#374151;">{{ msg.content|truncatewords:15 }}</div>
+        </div>
+        {% empty %}
+        <div style="text-align:center;padding:40px;color:#8892a4;">No sent messages</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

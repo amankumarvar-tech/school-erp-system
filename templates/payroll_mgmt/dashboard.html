@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Payroll{% endblock %}
+{% block page_title %}Payroll Management{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div><h1>💰 Payroll Management</h1><p>Salary management for staff</p></div>
+    <div style="display:flex;gap:10px;">
+        <a href="{% url 'generate_payroll' %}" class="btn btn-primary"><i class="fas fa-play"></i> Generate Payroll</a>
+        <a href="{% url 'salary_structure_add' %}" class="btn btn-outline"><i class="fas fa-plus"></i> Add Structure</a>
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card"><div class="stat-icon" style="background:#dbeafe;">👥</div><div class="stat-info"><h3>{{ total_teachers }}</h3><p>Total Staff</p></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#d1fae5;">✅</div><div class="stat-info"><h3>{{ paid_this_month }}</h3><p>Paid This Month</p></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#fef3c7;">⏳</div><div class="stat-info"><h3>{{ pending_this_month }}</h3><p>Pending</p></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#d1fae5;">💵</div><div class="stat-info"><h3>₹{{ total_payout|floatformat:0 }}</h3><p>Total Payout</p></div></div>
+</div>
+
+<div class="grid-2">
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">📋 Recent Salary Payments</div>
+            <a href="{% url 'payroll_list' %}" class="btn btn-sm btn-outline">View All</a>
+        </div>
+        <div class="table-wrapper">
+            <table>
+                <thead><tr><th>Teacher</th><th>Month/Year</th><th>Net Salary</th><th>Status</th></tr></thead>
+                <tbody>
+                {% for p in recent_payments %}
+                <tr>
+                    <td style="font-weight:600;">{{ p.teacher.full_name }}</td>
+                    <td>{{ p.month }}/{{ p.year }}</td>
+                    <td>₹{{ p.net_salary|floatformat:0 }}</td>
+                    <td><span class="badge {% if p.status == 'paid' %}badge-success{% elif p.status == 'pending' %}badge-warning{% else %}badge-danger{% endif %}">{{ p.get_status_display }}</span></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4" style="text-align:center;padding:30px;color:#8892a4;">No payments yet</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header"><div class="card-title">⚠️ No Salary Structure</div></div>
+        {% for t in teachers_no_structure %}
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #e2e8f0;">
+            <div>
+                <div style="font-weight:600;">{{ t.full_name }}</div>
+                <div class="text-muted">{{ t.designation }}</div>
+            </div>
+            <a href="{% url 'salary_structure_add' %}?teacher={{ t.id }}" class="btn btn-sm btn-primary">Set Salary</a>
+        </div>
+        {% empty %}
+        <div style="text-align:center;padding:30px;color:#8892a4;">All teachers have salary structures ✅</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

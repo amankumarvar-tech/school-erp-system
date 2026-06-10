@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Generate Payroll{% endblock %}
+{% block page_title %}Generate Payroll{% endblock %}
+{% block content %}
+<div class="page-header"><div><h1>Generate Monthly Payroll</h1><p>{{ teachers|length }} teachers with salary structures</p></div><a href="{% url 'payroll_dashboard' %}" class="btn btn-outline">Back</a></div>
+<div style="max-width:500px;">
+<div class="card">
+<form method="post">{% csrf_token %}
+    <div class="form-group"><label class="form-label">Month *</label>
+        <select name="month" class="form-control" required>
+            {% for num, name in months %}<option value="{{ num }}">{{ name }}</option>{% endfor %}
+        </select>
+    </div>
+    <div class="form-group"><label class="form-label">Year *</label>
+        <select name="year" class="form-control" required>
+            {% for yr in years %}<option value="{{ yr }}">{{ yr }}</option>{% endfor %}
+        </select>
+    </div>
+    <div style="background:#fef3c7;padding:14px;border-radius:10px;margin-bottom:20px;font-size:13px;color:#92400e;">
+        <i class="fas fa-info-circle"></i> This will generate salary records for all {{ teachers|length }} teachers who have active salary structures. Already paid months will be skipped.
+    </div>
+    <button type="submit" class="btn btn-primary btn-lg" style="width:100%;"><i class="fas fa-magic"></i> Generate Payroll</button>
+</form>
+</div>
+</div>
+{% endblock %}

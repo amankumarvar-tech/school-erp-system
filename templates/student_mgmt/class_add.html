@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Add Class{% endblock %}
+{% block page_title %}Add Class{% endblock %}
+{% block content %}
+<div style="max-width:600px;">
+<div class="page-header"><div><h1>Add New Class</h1></div><a href="{% url 'class_list' %}" class="btn btn-outline">Back</a></div>
+<div class="card">
+<form method="post">{% csrf_token %}
+    <div class="form-group"><label class="form-label">Class Name *</label><input name="name" class="form-control" placeholder="e.g. 6, 7, 8, IX, X" required></div>
+    <div class="form-group"><label class="form-label">Section *</label><input name="section" class="form-control" placeholder="e.g. A, B, C" required></div>
+    <div class="form-group"><label class="form-label">Capacity</label><input name="capacity" type="number" class="form-control" value="40"></div>
+    <div class="form-group"><label class="form-label">Room Number</label><input name="room_number" class="form-control" placeholder="e.g. 101"></div>
+    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Add Class</button>
+</form>
+</div>
+</div>
+{% endblock %}

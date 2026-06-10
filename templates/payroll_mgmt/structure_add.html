@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Add Salary Structure{% endblock %}
+{% block page_title %}Salary Structure{% endblock %}
+{% block content %}
+<div class="page-header"><div><h1>Set Salary Structure</h1></div><a href="{% url 'salary_structure_list' %}" class="btn btn-outline">Back</a></div>
+<div style="max-width:700px;">
+<div class="card">
+<form method="post">{% csrf_token %}
+    <div class="form-group"><label class="form-label">Teacher *</label>
+        <select name="teacher" class="form-control" required>
+            <option value="">Select Teacher</option>
+            {% for t in teachers %}<option value="{{ t.id }}">{{ t.full_name }} ({{ t.employee_id }})</option>{% endfor %}
+        </select>
+    </div>
+    <div class="form-group"><label class="form-label">Effective From *</label><input type="date" name="effective_from" class="form-control" required></div>
+    <div style="margin-bottom:16px;padding:12px;background:#d1fae5;border-radius:8px;font-weight:600;color:#065f46;">💚 EARNINGS</div>
+    <div class="form-grid">
+        <div class="form-group"><label class="form-label">Basic Salary (₹) *</label><input type="number" name="basic_salary" class="form-control" required oninput="calcNet()"></div>
+        <div class="form-group"><label class="form-label">HRA (₹)</label><input type="number" name="hra" class="form-control" value="0" oninput="calcNet()"></div>
+        <div class="form-group"><label class="form-label">DA (₹)</label><input type="number" name="da" class="form-control" value="0" oninput="calcNet()"></div>
+        <div class="form-group"><label class="form-label">TA (₹)</label><input type="number" name="ta" class="form-control" value="0" oninput="calcNet()"></div>
+        <div class="form-group"><label class="form-label">Medical Allow. (₹)</label><input type="number" name="medical_allowance" class="form-control" value="0" oninput="calcNet()"></div>
+        <div class="form-group"><label class="form-label">Other Allow. (₹)</label><input type="number" name="other_allowance" class="form-control" value="0" oninput="calcNet()"></div>
+    </div>
+    <div style="margin-bottom:16px;padding:12px;background:#fee2e2;border-radius:8px;font-weight:600;color:#991b1b;">❌ DEDUCTIONS</div>
+    <div class="form-grid">
+        <div class="form-group"><label class="form-label">PF Deduction (₹)</label><input type="number" name="pf_deduction" class="form-control" value="0" oninput="calcNet()"></div>
+        <div class="form-group"><label class="form-label">ESI (₹)</label><input type="number" name="esi_deduction" class="form-control" value="0" oninput="calcNet()"></div>
+        <div class="form-group"><label class="form-label">Tax/TDS (₹)</label><input type="number" name="tax_deduction" class="form-control" value="0" oninput="calcNet()"></div>
+        <div class="form-group"><label class="form-label">Other Ded. (₹)</label><input type="number" name="other_deduction" class="form-control" value="0" oninput="calcNet()"></div>
+    </div>
+    <div style="background:#1a1f36;color:white;padding:16px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <div style="font-size:16px;font-weight:700;">NET SALARY PAYABLE</div>
+        <div style="font-size:24px;font-weight:800;color:#f5a623;" id="net_display">₹0</div>
+    </div>
+    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Salary Structure</button>
+</form>
+</div>
+</div>
+<script>
+function calcNet() {
+    const earnings = ['basic_salary','hra','da','ta','medical_allowance','other_allowance'];
+    const deductions = ['pf_deduction','esi_deduction','tax_deduction','other_deduction'];
+    const gross = earnings.reduce((s, f) => s + (parseFloat(document.querySelector(`[name="${f}"]`).value) || 0), 0);
+    const ded = deductions.reduce((s, f) => s + (parseFloat(document.querySelector(`[name="${f}"]`).value) || 0), 0);
+    document.getElementById('net_display').textContent = '₹' + (gross - ded).toLocaleString('en-IN');
+}
+</script>
+{% endblock %}

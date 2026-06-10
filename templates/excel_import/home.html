@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block title %}Excel Import{% endblock %}
+{% block page_title %}Excel Data Import{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div><h1>📊 Excel Data Import</h1><p>Bulk upload students, teachers and fees from Excel</p></div>
+    <a href="{% url 'download_template' %}" class="btn btn-success"><i class="fas fa-download"></i> Download Template</a>
+</div>
+
+<div class="alert alert-info">
+    <i class="fas fa-info-circle"></i>
+    <strong>How to use:</strong> Download the template → Fill data in Excel → Upload here. Template mein 3 sheets hain: Students, Teachers, Fees.
+</div>
+
+<div class="grid-3">
+    <div class="card" style="border-top:4px solid #3b4fd8;">
+        <div style="text-align:center;padding:20px 0;">
+            <div style="font-size:48px;margin-bottom:12px;">🎓</div>
+            <h2 style="font-size:18px;font-weight:800;color:#1a1f36;">Students Import</h2>
+            <p class="text-muted" style="margin:8px 0 20px;">Bulk add/update students with class, parent details</p>
+            <a href="{% url 'import_students' %}" class="btn btn-primary btn-lg" style="width:100%;justify-content:center;">
+                <i class="fas fa-upload"></i> Import Students
+            </a>
+        </div>
+    </div>
+
+    <div class="card" style="border-top:4px solid #2ecc71;">
+        <div style="text-align:center;padding:20px 0;">
+            <div style="font-size:48px;margin-bottom:12px;">👨‍🏫</div>
+            <h2 style="font-size:18px;font-weight:800;color:#1a1f36;">Teachers Import</h2>
+            <p class="text-muted" style="margin:8px 0 20px;">Bulk add/update teacher profiles and details</p>
+            <a href="{% url 'import_teachers' %}" class="btn btn-success btn-lg" style="width:100%;justify-content:center;">
+                <i class="fas fa-upload"></i> Import Teachers
+            </a>
+        </div>
+    </div>
+
+    <div class="card" style="border-top:4px solid #f39c12;">
+        <div style="text-align:center;padding:20px 0;">
+            <div style="font-size:48px;margin-bottom:12px;">💰</div>
+            <h2 style="font-size:18px;font-weight:800;color:#1a1f36;">Fees Import</h2>
+            <p class="text-muted" style="margin:8px 0 20px;">Bulk import fee records (import students first)</p>
+            <a href="{% url 'import_fees' %}" class="btn btn-warning btn-lg" style="width:100%;justify-content:center;">
+                <i class="fas fa-upload"></i> Import Fees
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header"><div class="card-title">📋 Import Rules & Tips</div></div>
+    <div class="grid-2" style="gap:16px;">
+        <div>
+            <p style="font-weight:700;margin-bottom:8px;">✅ Kya karna hai:</p>
+            <ul style="font-size:13px;color:#374151;line-height:2;padding-left:20px;">
+                <li>Template download karke usme data bharo</li>
+                <li>Column headers mat badlo</li>
+                <li>Date format YYYY-MM-DD use karo (e.g. 2010-05-15)</li>
+                <li>Pehle Students import karo, phir Fees</li>
+                <li>Existing records update ho jaate hain (Admission No / Employee ID se)</li>
+            </ul>
+        </div>
+        <div>
+            <p style="font-weight:700;margin-bottom:8px;">❌ Kya nahi karna:</p>
+            <ul style="font-size:13px;color:#374151;line-height:2;padding-left:20px;">
+                <li>Header row delete mat karo</li>
+                <li>Column order mat badlo</li>
+                <li>Required (*) fields blank mat chhodna</li>
+                <li>Fee import se pehle student must exist karna</li>
+                <li>.csv file mat upload karo — sirf .xlsx</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

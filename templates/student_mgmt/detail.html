@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}{{ student.full_name }}{% endblock %}
+{% block page_title %}Student Profile{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div><h1>{{ student.full_name }}</h1><p>{{ student.admission_number }}</p></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <a href="{% url 'transfer_certificate_pdf' student.pk %}" target="_blank" class="btn btn-dark"><i class="fas fa-file-pdf"></i> TC</a>
+        <a href="{% url 'id_card_pdf' student.pk %}" target="_blank" class="btn btn-info"><i class="fas fa-id-card"></i> ID Card</a>
+        <a href="{% url 'student_edit' student.pk %}" class="btn btn-warning"><i class="fas fa-edit"></i> Edit</a>
+        <a href="{% url 'student_list' %}" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Back</a>
+    </div>
+</div>
+<div class="grid-2">
+    <div class="card">
+        <div class="card-header"><div class="card-title">📋 Personal Details</div></div>
+        <table><tbody>
+            <tr><td style="color:#8892a4;width:40%;padding:10px 0;">Admission No.</td><td><strong>{{ student.admission_number }}</strong></td></tr>
+            <tr><td style="color:#8892a4;padding:10px 0;">Full Name</td><td>{{ student.full_name }}</td></tr>
+            <tr><td style="color:#8892a4;padding:10px 0;">Date of Birth</td><td>{{ student.date_of_birth }}</td></tr>
+            <tr><td style="color:#8892a4;padding:10px 0;">Gender</td><td>{{ student.get_gender_display }}</td></tr>
+            <tr><td style="color:#8892a4;padding:10px 0;">Blood Group</td><td>{{ student.blood_group|default:"Not specified" }}</td></tr>
+            <tr><td style="color:#8892a4;padding:10px 0;">Category</td><td>{{ student.get_category_display }}</td></tr>
+            <tr><td style="color:#8892a4;padding:10px 0;">Class</td><td>{{ student.current_class|default:"Not assigned" }}</td></tr>
+            <tr><td style="color:#8892a4;padding:10px 0;">Admission Date</td><td>{{ student.admission_date }}</td></tr>
+            <tr><td style="color:#8892a4;padding:10px 0;">Status</td><td><span class="badge badge-success">Active</span></td></tr>
+        </tbody></table>
+    </div>
+    <div class="card">
+        <div class="card-header"><div class="card-title">👨‍👩‍👦 Parent Details</div></div>
+        <table><tbody>
+            <tr><td style="color:#8892a4;width:40%;padding:10px 0;">Father</td><td>{{ student.father_name }}</td></tr>
+            <tr><td style="color:#8892a4;padding:10px 0;">Father Phone</td><td>{{ student.father_phone }}</td></tr>
+            <tr><td style="color:#8892a4;padding:10px 0;">Mother</td><td>{{ student.mother_name }}</td></tr>
+            <tr><td style="color:#8892a4;padding:10px 0;">Mother Phone</td><td>{{ student.mother_phone|default:"N/A" }}</td></tr>
+            <tr><td style="color:#8892a4;padding:10px 0;">Email</td><td>{{ student.email|default:"N/A" }}</td></tr>
+            <tr><td style="color:#8892a4;padding:10px 0;">Phone</td><td>{{ student.phone|default:"N/A" }}</td></tr>
+            <tr><td style="color:#8892a4;padding:10px 0;">Address</td><td>{{ student.address }}</td></tr>
+        </tbody></table>
+    </div>
+    <div class="card">
+        <div class="card-header"><div class="card-title">📊 Attendance Summary</div></div>
+        {% with att=student.attendance.all %}
+        <div style="display:flex;gap:20px;flex-wrap:wrap;">
+            <div style="text-align:center;padding:20px;background:#d1fae5;border-radius:12px;flex:1;">
+                <div style="font-size:28px;font-weight:800;color:#065f46;">{{ att|length }}</div>
+                <div style="font-size:12px;color:#065f46;">Total Days</div>
+            </div>
+            <div style="text-align:center;padding:20px;background:#dbeafe;border-radius:12px;flex:1;">
+                <div style="font-size:28px;font-weight:800;color:#1e40af;">{{ student.attendance.filter|length }}</div>
+                <div style="font-size:12px;color:#1e40af;">Present</div>
+            </div>
+        </div>
+        {% endwith %}
+    </div>
+    <div class="card">
+        <div class="card-header"><div class="card-title">💰 Fee Status</div></div>
+        {% for fee in student.fee_payments.all|slice:":5" %}
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #e2e8f0;">
+            <div>{{ fee.fee_structure.get_fee_type_display }}</div>
+            <div>
+                <span class="badge {% if fee.status == 'paid' %}badge-success{% elif fee.status == 'overdue' %}badge-danger{% else %}badge-warning{% endif %}">
+                    {{ fee.get_status_display }}
+                </span>
+                ₹{{ fee.amount_due }}
+            </div>
+        </div>
+        {% empty %}
+        <div style="text-align:center;color:#8892a4;padding:20px;">No fee records</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

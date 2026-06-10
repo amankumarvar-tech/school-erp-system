@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Timetable{% endblock %}
+{% block page_title %}Timetable{% endblock %}
+{% block content %}
+<div class="page-header"><div><h1>Class Timetable</h1></div></div>
+<div class="card mb-4">
+    <form method="get" style="display:flex;gap:10px;align-items:flex-end;">
+        <div class="form-group" style="margin:0"><label class="form-label">Select Class</label>
+            <select name="class_id" class="form-control">
+                <option value="">Choose class...</option>
+                {% for cls in classes %}<option value="{{ cls.id }}" {% if class_id == cls.id|stringformat:"s" %}selected{% endif %}>{{ cls }}</option>{% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Load Timetable</button>
+    </form>
+</div>
+{% if timetable %}
+<div class="card">
+    <div class="table-wrapper">
+        <table>
+            <thead><tr><th>Period</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th><th>Saturday</th></tr></thead>
+            <tbody>
+                {% regroup timetable by period_number as by_period %}
+                {% for period in by_period %}
+                <tr>
+                    <td><strong>Period {{ period.grouper }}</strong></td>
+                    {% for day in "MON TUE WED THU FRI SAT"|split %}
+                    <td>{% for t in period.list %}{% if t.day == day %}{{ t.subject.name }}<br><small class="text-muted">{{ t.teacher }}</small>{% endif %}{% endfor %}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% elif class_id %}
+<div class="card" style="text-align:center;padding:50px;color:#8892a4;">No timetable entries found for this class.</div>
+{% endif %}
+{% endblock %}

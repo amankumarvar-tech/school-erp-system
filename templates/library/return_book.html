@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Return Book{% endblock %}
+{% block page_title %}Return Book{% endblock %}
+{% block content %}
+<div style="max-width:500px;margin:50px auto;">
+<div class="card" style="text-align:center;padding:40px;">
+    <div style="font-size:50px;margin-bottom:15px;">📖</div>
+    <h2 style="margin-bottom:8px;">Return Book</h2>
+    <div style="background:#f0f2ff;padding:15px;border-radius:10px;margin:20px 0;text-align:left;">
+        <div><strong>Book:</strong> {{ issue.book.title }}</div>
+        <div><strong>Borrower:</strong> {{ issue.borrower_name }}</div>
+        <div><strong>Issued:</strong> {{ issue.issue_date }}</div>
+        <div><strong>Due Date:</strong> {{ issue.due_date }}</div>
+        {% if issue.fine_amount > 0 %}<div style="color:#e74c3c;font-weight:600;margin-top:8px;">⚠️ Fine: ₹{{ issue.fine_amount }}</div>{% endif %}
+    </div>
+    <form method="post" style="display:flex;gap:10px;justify-content:center;">
+        {% csrf_token %}
+        <a href="{% url 'issue_list' %}" class="btn btn-outline">Cancel</a>
+        <button type="submit" class="btn btn-success"><i class="fas fa-check"></i> Confirm Return</button>
+    </form>
+</div>
+</div>
+{% endblock %}

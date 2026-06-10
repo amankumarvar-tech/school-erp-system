@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Collect Fee{% endblock %}
+{% block page_title %}Collect Fee{% endblock %}
+{% block content %}
+<div class="page-header"><div><h1>Record Fee Payment</h1></div><a href="{% url 'fees_list' %}" class="btn btn-outline">Back</a></div>
+<div style="max-width:700px;">
+<div class="card">
+<form method="post">{% csrf_token %}
+    <div class="form-grid">
+        <div class="form-group"><label class="form-label">Student *</label>
+            <select name="student" class="form-control" required>
+                <option value="">Select Student</option>
+                {% for s in students %}<option value="{{ s.id }}">{{ s.full_name }} ({{ s.admission_number }})</option>{% endfor %}
+            </select>
+        </div>
+        <div class="form-group"><label class="form-label">Fee Structure *</label>
+            <select name="fee_structure" class="form-control" required>
+                <option value="">Select Fee Type</option>
+                {% for fs in structures %}<option value="{{ fs.id }}">{{ fs.get_fee_type_display }} - {{ fs.class_name }} - ₹{{ fs.amount }}</option>{% endfor %}
+            </select>
+        </div>
+        <div class="form-group"><label class="form-label">Amount Due (₹) *</label><input type="number" name="amount_due" class="form-control" required></div>
+        <div class="form-group"><label class="form-label">Amount Paid (₹) *</label><input type="number" name="amount_paid" class="form-control" required></div>
+        <div class="form-group"><label class="form-label">Due Date *</label><input type="date" name="due_date" class="form-control" required></div>
+        <div class="form-group"><label class="form-label">Payment Date</label><input type="date" name="payment_date" class="form-control"></div>
+        <div class="form-group"><label class="form-label">Payment Method</label>
+            <select name="payment_method" class="form-control">
+                <option value="cash">Cash</option><option value="cheque">Cheque</option>
+                <option value="online">Online Transfer</option><option value="upi">UPI</option>
+            </select>
+        </div>
+        <div class="form-group"><label class="form-label">Status</label>
+            <select name="status" class="form-control">
+                <option value="paid">Paid</option><option value="partial">Partial</option>
+                <option value="pending">Pending</option>
+            </select>
+        </div>
+        <div class="form-group"><label class="form-label">Transaction ID</label><input name="transaction_id" class="form-control" placeholder="Optional"></div>
+    </div>
+    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Record Payment</button>
+</form>
+</div>
+</div>
+{% endblock %}

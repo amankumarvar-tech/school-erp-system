@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Fee Receipt{% endblock %}
+{% block page_title %}Fee Receipt{% endblock %}
+{% block content %}
+<div class="page-header"><div><h1>Fee Receipt</h1><p>{{ fee.receipt_number }}</p></div>
+<div style="display:flex;gap:10px;">
+    <a href="{% url 'fee_receipt_pdf' fee.pk %}" target="_blank" class="btn btn-primary"><i class="fas fa-file-pdf"></i> Download PDF</a>
+    <a href="{% url 'fees_list' %}" class="btn btn-outline">Back</a>
+</div></div>
+<div style="max-width:600px;">
+<div class="card">
+    <div style="text-align:center;margin-bottom:20px;padding-bottom:20px;border-bottom:2px dashed #e2e8f0;">
+        <div style="font-size:30px;margin-bottom:5px;">🏫</div>
+        <div style="font-size:20px;font-weight:800;">EduManage School ERP</div>
+        <div class="text-muted">Fee Receipt</div>
+    </div>
+    <table><tbody>
+        <tr><td style="color:#8892a4;padding:10px 0;width:40%;">Receipt No.</td><td><strong>{{ fee.receipt_number }}</strong></td></tr>
+        <tr><td style="color:#8892a4;padding:10px 0;">Student</td><td>{{ fee.student.full_name }}</td></tr>
+        <tr><td style="color:#8892a4;padding:10px 0;">Admission No.</td><td>{{ fee.student.admission_number }}</td></tr>
+        <tr><td style="color:#8892a4;padding:10px 0;">Class</td><td>{{ fee.student.current_class }}</td></tr>
+        <tr><td style="color:#8892a4;padding:10px 0;">Fee Type</td><td>{{ fee.fee_structure.get_fee_type_display }}</td></tr>
+        <tr><td style="color:#8892a4;padding:10px 0;">Amount Due</td><td>₹{{ fee.amount_due }}</td></tr>
+        <tr><td style="color:#8892a4;padding:10px 0;">Amount Paid</td><td><strong style="color:#2ecc71;">₹{{ fee.amount_paid }}</strong></td></tr>
+        <tr><td style="color:#8892a4;padding:10px 0;">Payment Method</td><td>{{ fee.get_payment_method_display|default:"—" }}</td></tr>
+        <tr><td style="color:#8892a4;padding:10px 0;">Payment Date</td><td>{{ fee.payment_date|default:"—" }}</td></tr>
+        <tr><td style="color:#8892a4;padding:10px 0;">Status</td><td><span class="badge {% if fee.status == 'paid' %}badge-success{% else %}badge-warning{% endif %}">{{ fee.get_status_display }}</span></td></tr>
+        <tr><td style="color:#8892a4;padding:10px 0;">Collected By</td><td>{{ fee.collected_by|default:"—" }}</td></tr>
+    </tbody></table>
+    <div style="margin-top:20px;text-align:center;"><button onclick="window.print()" class="btn btn-primary"><i class="fas fa-print"></i> Print Receipt</button></div>
+</div>
+</div>
+{% endblock %}

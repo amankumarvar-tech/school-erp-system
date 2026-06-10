@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block title %}Library{% endblock %}
+{% block page_title %}Library Management{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div><h1>📚 Library Management</h1><p>Books, issues and returns</p></div>
+    <div style="display:flex;gap:10px;">
+        <a href="{% url 'book_add' %}" class="btn btn-primary"><i class="fas fa-plus"></i> Add Book</a>
+        <a href="{% url 'issue_book' %}" class="btn btn-success"><i class="fas fa-hand-holding-heart"></i> Issue Book</a>
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card"><div class="stat-icon" style="background:#dbeafe;">📚</div><div class="stat-info"><h3>{{ total_books }}</h3><p>Total Titles</p></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#d1fae5;">📖</div><div class="stat-info"><h3>{{ total_copies }}</h3><p>Total Copies</p></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#fef3c7;">🔖</div><div class="stat-info"><h3>{{ issued_count }}</h3><p>Currently Issued</p></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#fee2e2;">⚠️</div><div class="stat-info"><h3>{{ overdue_count }}</h3><p>Overdue Books</p></div></div>
+</div>
+
+<div class="grid-2">
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">🔖 Recent Issues</div>
+            <a href="{% url 'issue_list' %}" class="btn btn-sm btn-outline">View All</a>
+        </div>
+        <div class="table-wrapper">
+            <table>
+                <thead><tr><th>Book</th><th>Borrower</th><th>Due Date</th><th>Status</th></tr></thead>
+                <tbody>
+                {% for issue in recent_issues %}
+                <tr>
+                    <td><div style="font-weight:600;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ issue.book.title }}</div></td>
+                    <td>{{ issue.borrower_name }}</td>
+                    <td>{{ issue.due_date }}</td>
+                    <td>
+                        <span class="badge {% if issue.status == 'returned' %}badge-success{% elif issue.status == 'overdue' %}badge-danger{% else %}badge-warning{% endif %}">
+                            {{ issue.get_status_display }}
+                        </span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4" style="text-align:center;padding:30px;color:#8892a4;">No recent issues</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header"><div class="card-title">⚠️ Overdue Books</div></div>
+        <div class="table-wrapper">
+            <table>
+                <thead><tr><th>Book</th><th>Borrower</th><th>Overdue Since</th><th>Fine</th></tr></thead>
+                <tbody>
+                {% for issue in overdue_books %}
+                <tr>
+                    <td style="font-weight:600;">{{ issue.book.title|truncatechars:25 }}</td>
+                    <td>{{ issue.borrower_name }}</td>
+                    <td><span class="badge badge-danger">{{ issue.due_date }}</span></td>
+                    <td>₹{{ issue.fine_amount }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4" style="text-align:center;padding:30px;color:#8892a4;">No overdue books 🎉</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <div class="card-title">📂 Book Categories</div>
+        <div style="display:flex;gap:8px;">
+            <a href="{% url 'book_list' %}" class="btn btn-sm btn-outline">All Books</a>
+        </div>
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        {% for cat in categories %}
+        <a href="{% url 'book_list' %}?category={{ cat.id }}" class="btn btn-outline">📁 {{ cat.name }}</a>
+        {% empty %}
+        <p class="text-muted">No categories yet</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

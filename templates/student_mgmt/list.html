@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Students{% endblock %}
+{% block page_title %}Students{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>Student Management</h1>
+        <p>Manage all enrolled students</p>
+    </div>
+    <div style="display:flex;gap:10px;">
+        <form method="get" class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" name="q" value="{{ query }}" placeholder="Search students...">
+        </form>
+        <a href="{% url 'student_add' %}" class="btn btn-primary"><i class="fas fa-plus"></i> Add Student</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Adm. No.</th>
+                    <th>Name</th>
+                    <th>Class</th>
+                    <th>Father's Name</th>
+                    <th>Contact</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td><span class="badge badge-info">{{ student.admission_number }}</span></td>
+                    <td>
+                        <div style="font-weight:600;">{{ student.full_name }}</div>
+                        <div class="text-muted">{{ student.get_gender_display }} | DOB: {{ student.date_of_birth }}</div>
+                    </td>
+                    <td>{{ student.current_class|default:"—" }}</td>
+                    <td>{{ student.father_name }}</td>
+                    <td>
+                        <div>{{ student.father_phone }}</div>
+                        {% if student.email %}<div class="text-muted">{{ student.email }}</div>{% endif %}
+                    </td>
+                    <td><span class="badge badge-success">Active</span></td>
+                    <td>
+                        <div style="display:flex;gap:5px;">
+                            <a href="{% url 'student_detail' student.pk %}" class="btn btn-sm btn-outline"><i class="fas fa-eye"></i></a>
+                            <a href="{% url 'student_edit' student.pk %}" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
+                            <a href="{% url 'student_delete' student.pk %}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" style="text-align:center;padding:50px;color:#8892a4;">
+                    <div style="font-size:40px;margin-bottom:10px;">🎓</div>
+                    <div>No students found. <a href="{% url 'student_add' %}" style="color:#3b4fd8;">Add first student</a></div>
+                </td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

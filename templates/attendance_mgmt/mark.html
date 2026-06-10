@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Mark Attendance{% endblock %}
+{% block page_title %}Mark Attendance{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div><h1>Mark Attendance</h1><p>Select class to mark daily attendance</p></div>
+    <a href="{% url 'attendance_list' %}" class="btn btn-outline">View Records</a>
+</div>
+<div class="card mb-4">
+    <form method="get" style="display:flex;gap:15px;align-items:flex-end;flex-wrap:wrap;">
+        <div class="form-group" style="margin:0"><label class="form-label">Select Class</label>
+            <select name="class_id" class="form-control">
+                <option value="">Choose class...</option>
+                {% for cls in classes %}<option value="{{ cls.id }}" {% if class_id == cls.id|stringformat:"s" %}selected{% endif %}>{{ cls }}</option>{% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Load Students</button>
+    </form>
+</div>
+
+{% if students %}
+<form method="post">{% csrf_token %}
+<input type="hidden" name="class_id" value="{{ class_id }}">
+<input type="hidden" name="date" value="{{ today }}">
+<div class="card">
+    <div class="card-header">
+        <div class="card-title">Students — {{ today }}</div>
+        <div style="display:flex;gap:8px;">
+            <button type="button" onclick="markAll('present')" class="btn btn-sm btn-success">All Present</button>
+            <button type="button" onclick="markAll('absent')" class="btn btn-sm btn-danger">All Absent</button>
+        </div>
+    </div>
+    <div class="table-wrapper">
+        <table>
+            <thead><tr><th>#</th><th>Student Name</th><th>Present</th><th>Absent</th><th>Late</th><th>Leave</th></tr></thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td style="font-weight:600;">{{ student.full_name }}</td>
+                    {% for status, label in statuses|default:"" %}{% endfor %}
+                    <td><input type="radio" name="status_{{ student.id }}" value="present" checked></td>
+                    <td><input type="radio" name="status_{{ student.id }}" value="absent"></td>
+                    <td><input type="radio" name="status_{{ student.id }}" value="late"></td>
+                    <td><input type="radio" name="status_{{ student.id }}" value="leave"></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div style="margin-top:20px;text-align:right;">
+        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Attendance ({{ students|length }} students)</button>
+    </div>
+</div>
+</form>
+<script>
+function markAll(status) {
+    document.querySelectorAll(`input[value="${status}"]`).forEach(r => r.checked = true);
+}
+</script>
+{% endif %}
+{% endblock %}

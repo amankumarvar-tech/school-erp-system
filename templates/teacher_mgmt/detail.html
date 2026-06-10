@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}{{ teacher.full_name }}{% endblock %}
+{% block page_title %}Teacher Profile{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div><h1>{{ teacher.full_name }}</h1><p>{{ teacher.employee_id }} | {{ teacher.designation }}</p></div>
+    <div style="display:flex;gap:10px;">
+        <a href="{% url 'teacher_edit' teacher.pk %}" class="btn btn-warning"><i class="fas fa-edit"></i> Edit</a>
+        <a href="{% url 'teacher_list' %}" class="btn btn-outline">Back</a>
+    </div>
+</div>
+<div class="grid-2">
+    <div class="card">
+        <div class="card-header"><div class="card-title">Professional Details</div></div>
+        <table><tbody>
+            <tr><td style="color:#8892a4;padding:10px 0;width:40%">Employee ID</td><td><strong>{{ teacher.employee_id }}</strong></td></tr>
+            <tr><td style="color:#8892a4;padding:10px 0;">Designation</td><td>{{ teacher.designation }}</td></tr>
+            <tr><td style="color:#8892a4;padding:10px 0;">Department</td><td>{{ teacher.department|default:"N/A" }}</td></tr>
+            <tr><td style="color:#8892a4;padding:10px 0;">Qualification</td><td>{{ teacher.qualification }}</td></tr>
+            <tr><td style="color:#8892a4;padding:10px 0;">Experience</td><td>{{ teacher.experience_years }} years</td></tr>
+            <tr><td style="color:#8892a4;padding:10px 0;">Employment Type</td><td>{{ teacher.get_employment_type_display }}</td></tr>
+            <tr><td style="color:#8892a4;padding:10px 0;">Joining Date</td><td>{{ teacher.joining_date }}</td></tr>
+            <tr><td style="color:#8892a4;padding:10px 0;">Salary</td><td>₹{{ teacher.basic_salary }}</td></tr>
+        </tbody></table>
+    </div>
+    <div class="card">
+        <div class="card-header"><div class="card-title">Contact Information</div></div>
+        <table><tbody>
+            <tr><td style="color:#8892a4;padding:10px 0;width:40%">Full Name</td><td>{{ teacher.full_name }}</td></tr>
+            <tr><td style="color:#8892a4;padding:10px 0;">Gender</td><td>{{ teacher.get_gender_display }}</td></tr>
+            <tr><td style="color:#8892a4;padding:10px 0;">Date of Birth</td><td>{{ teacher.date_of_birth }}</td></tr>
+            <tr><td style="color:#8892a4;padding:10px 0;">Email</td><td>{{ teacher.email }}</td></tr>
+            <tr><td style="color:#8892a4;padding:10px 0;">Phone</td><td>{{ teacher.phone }}</td></tr>
+            <tr><td style="color:#8892a4;padding:10px 0;">Address</td><td>{{ teacher.address }}</td></tr>
+            <tr><td style="color:#8892a4;padding:10px 0;">Status</td><td><span class="badge badge-success">Active</span></td></tr>
+        </tbody></table>
+    </div>
+</div>
+{% endblock %}

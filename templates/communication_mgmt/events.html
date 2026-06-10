@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Events{% endblock %}
+{% block page_title %}Events & Calendar{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div><h1>🗓️ Events & Holidays</h1><p>School events and holiday calendar</p></div>
+    <a href="{% url 'event_add' %}" class="btn btn-primary"><i class="fas fa-plus"></i> Add Event</a>
+</div>
+
+<div class="grid-2">
+    <div class="card">
+        <div class="card-header"><div class="card-title">📅 Upcoming Events</div></div>
+        {% for e in upcoming %}
+        <div style="padding:14px 0;border-bottom:1px solid #e2e8f0;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                <div>
+                    <div style="font-weight:700;">{{ e.name }}
+                        {% if e.is_holiday %}<span class="badge badge-danger" style="margin-left:6px;">Holiday</span>{% endif %}
+                    </div>
+                    <div class="text-muted" style="margin-top:3px;">📍 {{ e.venue }} &nbsp;|&nbsp; 👤 {{ e.organized_by }}</div>
+                    <div class="text-muted">{{ e.description|truncatewords:15 }}</div>
+                </div>
+                <div style="text-align:right;flex-shrink:0;margin-left:10px;">
+                    <span class="badge badge-info">{{ e.event_date|date:"d M Y" }}</span>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div style="text-align:center;padding:30px;color:#8892a4;">No upcoming events</div>
+        {% endfor %}
+    </div>
+
+    <div class="card">
+        <div class="card-header"><div class="card-title">🕐 Past Events</div></div>
+        {% for e in past %}
+        <div style="padding:12px 0;border-bottom:1px solid #e2e8f0;">
+            <div style="font-weight:600;color:#374151;">{{ e.name }}</div>
+            <div class="text-muted">{{ e.event_date|date:"d M Y" }} &nbsp;|&nbsp; {{ e.venue }}</div>
+        </div>
+        {% empty %}
+        <div style="text-align:center;padding:30px;color:#8892a4;">No past events</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

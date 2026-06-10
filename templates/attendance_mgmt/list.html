@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Attendance{% endblock %}
+{% block page_title %}Attendance{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div><h1>Attendance Records</h1><p>View and manage daily attendance</p></div>
+    <a href="{% url 'mark_attendance' %}" class="btn btn-primary"><i class="fas fa-clipboard-check"></i> Mark Attendance</a>
+</div>
+<div class="card mb-4">
+    <form method="get" style="display:flex;gap:15px;align-items:flex-end;flex-wrap:wrap;">
+        <div class="form-group" style="margin:0"><label class="form-label">Date</label><input type="date" name="date" value="{{ date }}" class="form-control"></div>
+        <div class="form-group" style="margin:0"><label class="form-label">Class</label>
+            <select name="class_id" class="form-control">
+                <option value="">All Classes</option>
+                {% for cls in classes %}<option value="{{ cls.id }}" {% if class_id == cls.id|stringformat:"s" %}selected{% endif %}>{{ cls }}</option>{% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </form>
+</div>
+<div class="card">
+    <div class="table-wrapper">
+        <table>
+            <thead><tr><th>Student</th><th>Class</th><th>Status</th><th>Remarks</th><th>Marked At</th></tr></thead>
+            <tbody>
+                {% for att in attendance %}
+                <tr>
+                    <td style="font-weight:600;">{{ att.student.full_name }}</td>
+                    <td>{{ att.class_name }}</td>
+                    <td><span class="badge {% if att.status == 'present' %}badge-success{% elif att.status == 'absent' %}badge-danger{% elif att.status == 'late' %}badge-warning{% else %}badge-secondary{% endif %}">{{ att.get_status_display }}</span></td>
+                    <td>{{ att.remarks|default:"—" }}</td>
+                    <td class="text-muted">{{ att.marked_at|date:"H:i" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" style="text-align:center;padding:50px;color:#8892a4;">No attendance records for this date/class.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

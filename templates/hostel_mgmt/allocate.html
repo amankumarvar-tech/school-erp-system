@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Allocate Room{% endblock %}
+{% block page_title %}Allocate Room{% endblock %}
+{% block content %}
+<div class="page-header"><div><h1>Allocate Room to Student</h1></div><a href="{% url 'hostel_dashboard' %}" class="btn btn-outline">Back</a></div>
+<div style="max-width:500px;"><div class="card">
+<form method="post">{% csrf_token %}
+    <div class="form-group"><label class="form-label">Student *</label><select name="student" class="form-control" required><option value="">Select Student</option>{% for s in students %}<option value="{{ s.id }}">{{ s.full_name }} ({{ s.admission_number }})</option>{% endfor %}</select></div>
+    <div class="form-group"><label class="form-label">Room *</label><select name="room" class="form-control" required><option value="">Select Room</option>{% for r in rooms %}<option value="{{ r.id }}">{{ r.hostel.name }} - Room {{ r.room_number }} ({{ r.capacity }} capacity)</option>{% endfor %}</select></div>
+    <div class="form-group"><label class="form-label">Check-in Date *</label><input type="date" name="check_in" class="form-control" required></div>
+    <button type="submit" class="btn btn-success"><i class="fas fa-check"></i> Allocate Room</button>
+</form>
+</div></div>
+{% endblock %}

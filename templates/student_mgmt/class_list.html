@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Classes{% endblock %}
+{% block page_title %}Classes{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div><h1>Classes</h1><p>All classes and sections</p></div>
+    <a href="{% url 'class_add' %}" class="btn btn-primary"><i class="fas fa-plus"></i> Add Class</a>
+</div>
+<div class="stats-grid">
+{% for cls in classes %}
+<div class="card" style="padding:20px;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+            <div style="font-size:22px;font-weight:800;color:#1a1f36;">Class {{ cls.name }}-{{ cls.section }}</div>
+            <div class="text-muted" style="margin-top:5px;">Room: {{ cls.room_number|default:"TBA" }}</div>
+            <div class="text-muted">Capacity: {{ cls.capacity }} students</div>
+            <div class="text-muted">Teacher: {{ cls.class_teacher|default:"Not assigned" }}</div>
+        </div>
+        <div style="text-align:right;">
+            <div style="font-size:30px;font-weight:800;color:#3b4fd8;">{{ cls.student_set.filter.count|default:"0" }}</div>
+            <div class="text-muted" style="font-size:12px;">Students</div>
+        </div>
+    </div>
+</div>
+{% empty %}
+<div class="card" style="grid-column:1/-1;text-align:center;padding:50px;color:#8892a4;">No classes yet. <a href="{% url 'class_add' %}" style="color:#3b4fd8;">Add first class</a></div>
+{% endfor %}
+</div>
+{% endblock %}

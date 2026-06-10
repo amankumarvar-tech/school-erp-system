@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Confirm Delete{% endblock %}
+{% block page_title %}Confirm Delete{% endblock %}
+{% block content %}
+<div style="max-width:500px;margin:50px auto;">
+<div class="card" style="text-align:center;padding:40px;">
+    <div style="font-size:60px;margin-bottom:20px;">⚠️</div>
+    <h2 style="margin-bottom:10px;">Deactivate Student?</h2>
+    <p style="color:#8892a4;margin-bottom:30px;">This will deactivate <strong>{{ student.full_name }}</strong> ({{ student.admission_number }}). They can be reactivated later.</p>
+    <form method="post" style="display:flex;gap:10px;justify-content:center;">
+        {% csrf_token %}
+        <a href="{% url 'student_list' %}" class="btn btn-outline">Cancel</a>
+        <button type="submit" class="btn btn-danger">Yes, Deactivate</button>
+    </form>
+</div>
+</div>
+{% endblock %}
